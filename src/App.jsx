@@ -1,121 +1,99 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
+import logo from './imagens/logo-delta.png'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLogin, setIsLogin] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [user, setUser] = useState({ nome: '', email: '' });
+  const [showPass, setShowPass] = useState(false);
+  const [formData, setFormData] = useState({ nome: '', email: '', senha: '' });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAuth = (e) => {
+    e.preventDefault();
+    // Simulação de login enquanto seu colega termina o backend
+    setUser({ nome: formData.nome || 'Usuário Delta', email: formData.email });
+    setShowWelcome(true);
+  };
+
+  if (showWelcome) {
+    return (
+      <div className="screen">
+        <div className="welcome-card">
+          <div className="welcome-badge">✦</div>
+          <h1 className="welcome-title">Olá, <span>{user.nome}</span>!</h1>
+          <p className="welcome-sub">Você está autenticado com sucesso na Delta.</p>
+          <div className="welcome-info">
+            <span className="info-label">E-mail da sessão</span>
+            <span className="info-value">{user.email}</span>
+          </div>
+          <button onClick={() => setShowWelcome(false)} className="btn btn-ghost">Sair da conta</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="screen">
+      <div className="auth-wrapper">
+        <aside className="auth-deco">
+          <div className="deco-blob"></div>
+          <div className="logo-container">
+            <img src={logo} alt="Delta Logo" />
+          </div>
+          <p className="deco-quote">"Confiança e Inovação<br/>em cada investimento."</p>
+        </aside>
 
-      <div className="ticks"></div>
+        <main className="auth-card">
+          <div className="tabs">
+            <button className={`tab ${isLogin ? 'active' : ''}`} onClick={() => setIsLogin(true)}>Entrar</button>
+            <button className={`tab ${!isLogin ? 'active' : ''}`} onClick={() => setIsLogin(false)}>Cadastrar</button>
+            <div className={`tab-indicator ${isLogin ? '' : 'right'}`}></div>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <form className="form" onSubmit={handleAuth}>
+            <div className="form-header">
+              <h2 className="form-title">{isLogin ? 'Bem-vindo de volta' : 'Criar conta'}</h2>
+              <p className="form-subtitle">{isLogin ? 'Acesse sua conta Delta' : 'Abra sua conta agora'}</p>
+            </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+            {!isLogin && (
+              <div className="field">
+                <label>Nome Completo</label>
+                <div className="input-wrap">
+                  <input type="text" name="nome" placeholder="Seu nome" onChange={handleInputChange} />
+                </div>
+              </div>
+            )}
+
+            <div className="field">
+              <label>E-mail</label>
+              <div className="input-wrap">
+                <input type="email" name="email" placeholder="seu@email.com" onChange={handleInputChange} />
+              </div>
+            </div>
+
+            <div className="field">
+              <label>Senha</label>
+              <div className="input-wrap">
+                <input type={showPass ? "text" : "password"} name="senha" placeholder="••••••••" onChange={handleInputChange} />
+                <button type="button" className="toggle-pass" onClick={() => setShowPass(!showPass)}>
+                  {showPass ? '👁️' : '🔒'}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" className="btn btn-primary">
+              <span>{isLogin ? 'Entrar' : 'Cadastrar'}</span>
+            </button>
+          </form>
+        </main>
+      </div>
+    </div>
   )
 }
 
